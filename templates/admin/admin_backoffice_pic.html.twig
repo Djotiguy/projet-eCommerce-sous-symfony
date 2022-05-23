@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Backoffice Administrateur - {{ parent() }}{% endblock %}
+
+{% block body %}
+  <!-- Section AdminBackoffice -->
+  <div class="w3-container w3-content w3-center w3-padding-64" style="max-width:800px" id="adminbackoffice">
+    <h1>Backoffice Administrateur</h1>
+
+    <a href="{{ path('product_create') }}" class="w3-button w3-black" role="button">Créer Produit</a>
+    <a href="{{ path('tag_create') }}" class="w3-button w3-green" role="button">Créer Tags</a>
+    <a href="{{ path('category_generate') }}" class="w3-button w3-blue" role="button">Générer Catégories</a>
+
+    <h2>Liste des Produits</h2>
+    {% if products is not empty %}
+        <ul class="w3-ul w3-border-white w3-white">
+            {% for product in products %}
+                <li class="w3-padding">
+                    <p>
+                        <b>{{ product.name }}</b> : ({{ product.picFilename | slice() }})
+                        <a href="{{ path('product_delete', {'productId' : product.id}) }}" class="w3-button w3-red" role="button" style="float:right;">Supprimer Produit</a>
+                        <a href="{{ path('product_update', {'productId' : product.id}) }}" class="w3-button w3-blue-gray" role="button" style="float:right;">Modifier Produit</a>
+                    </p>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p><b>Il n'y a aucun Produit à afficher.</b></p>
+    {% endif %}
+
+  </div>
+{% endblock %}

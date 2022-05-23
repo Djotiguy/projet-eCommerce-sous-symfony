@@ -1,0 +1,110 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des Commandes - {{ parent() }}{% endblock %}
+
+{% block body %}
+  <!-- Orders Section -->
+  <div class="w3-container w3-content w3-center w3-padding-64" style="max-width:800px" id="orders">
+    <h1>Tableau de bord Administrateur</h1>
+
+    <!-- Commandes Actives -->
+    <h2 class="w3-wide">Commandes actives</h2>
+
+    {% if activeOrders is not empty %}
+        {% for order in activeOrders %}
+            <table class="w3-table-all" style="margin-top:50px">
+              <tr>
+                <th>Utilisateur: 
+                  {% if order.user is not null %}
+                    {{ order.user.username|capitalize }}
+                  {% else %}
+                    <i>Utilisateur inconnu</i>
+                  {% endif %}
+                </th>
+                <th>Statut: {{ order.status|capitalize }}</th>
+                <th>Prix total: {{ order.totalPrice|number_format(2, ',') }}€</th>
+                <th>
+                    <a href="{{ path('order_validate_admin', {'orderId' : order.id}) }}" class="w3-button w3-blue-gray" role="button">
+                        Valider Commande
+                    </a>
+                </th>
+                <th>
+                    <a href="{{ path('order_delete_admin', {'orderId' : order.id}) }}" class="w3-button w3-red" role="button">
+                        Supprimer Commande
+                    </a>
+                </th>
+              </tr>
+              <!-- Seconde rangée, légende des Réservations -->
+              <tr>
+                <th>Produit</th>
+                <th>Quantité</th>
+                <th>Prix</th>
+                <th>Date d'ajout au Panier</th>
+                <th>Supprimer la Réservation</th>
+              </tr>
+              <!-- Réservations -->
+                {% for reservation in order.reservations %}
+                <tr>
+                    <td>{{ reservation.product.name }}</td>
+                    <td>{{ reservation.quantity }}</td>
+                    <td>
+                      {{ reservation.totalPrice|number_format(2, ',') }}€<br>
+                      ({{ reservation.product.price|number_format(2, ',') }}€ par unité)
+                    </td>
+                    <td>{{ reservation.creationDate|date('d/m/Y à G:i', 'Europe/Paris') }}</td>
+                    <td>
+                      <a href="{{ path('reservation_delete_admin', {'reservationId' : reservation.id}) }}" class="w3-button w3-red" role="button">
+                        Supprimer
+                      </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+        {% endfor %}
+    {% else %}
+        <p><b>Il n'y a aucune commande active en cours</b></p>
+    {% endif %}
+
+    <!-- Commandes Archivées -->
+    <h2 class="w3-wide">Commandes Archivées</h2>
+
+    {% if archivedOrders is not empty %}
+        {% for order in archivedOrders %}
+            <table class="w3-table-all" style="margin-top:50px">
+              <tr>
+                <th>Utilisateur: 
+                  {% if order.user is not null %}
+                    {{ order.user.username|capitalize }}
+                  {% else %}
+                    <i>Utilisateur inconnu</i>
+                  {% endif %}</th>
+                <th>Statut: {{ order.status|capitalize }}</th>
+                <th>Prix total: {{ order.totalPrice|number_format(2, ',') }}€</th>
+              </tr>
+              <!-- Seconde rangée, légende des Réservations -->
+              <tr>
+                <th>Produit</th>
+                <th>Quantité</th>
+                <th>Prix</th>
+                <th>Date d'ajout au Panier</th>
+              </tr>
+              <!-- Réservations -->
+                {% for reservation in order.reservations %}
+                <tr>
+                    <td>{{ reservation.product.name }}</td>
+                    <td>{{ reservation.quantity }}</td>
+                    <td>
+                      {{ reservation.totalPrice|number_format(2, ',') }}€<br>
+                      ({{ reservation.product.price|number_format(2, ',') }}€ par unité)
+                    </td>
+                    <td>{{ reservation.creationDate|date('d/m/Y à G:i', 'Europe/Paris') }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        {% endfor %}
+    {% else %}
+        <p><b>Il n'y a aucune commande archivée.</b></p>
+    {% endif %}
+
+  </div>
+{% endblock %}
